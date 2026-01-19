@@ -480,7 +480,7 @@
     
     background: #fff;
     box-shadow: -4px 0 24px rgba(0, 0, 0, 0.12);
-    z-index: 200;
+    z-index: 20000;
 }
 
 .right-panel.panel-hover-expanded .right-panel--header,
