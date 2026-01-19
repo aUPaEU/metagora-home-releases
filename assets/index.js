@@ -12,8 +12,8 @@
     box-sizing: border-box;
 
     display: flex;
-    height: 100vh;
-    width: 100vw;
+    /* height: 100vh; */
+    /* width: 100vw; */
 
     overflow: hidden;
 }
@@ -229,7 +229,7 @@
     
     background: #fff;
     box-shadow: 4px 0 24px rgba(0, 0, 0, 0.12);
-    z-index: 200;
+    z-index: 20000;
 }
 
 .left-panel.nav-hover-expanded .left-panel--header,
