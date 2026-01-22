@@ -2477,10 +2477,27 @@ ul {
 
 .metagora-hero--right {
     flex: 0 0 40%;
+    height: 100%;
 
     overflow-x: hidden;
     overflow-y: auto;
     scrollbar-gutter: stable;
+
+    /* Gradient fade at top and bottom */
+    mask-image: linear-gradient(
+        to bottom,
+        transparent 0%,
+        black 48px,
+        black calc(100% - 48px),
+        transparent 100%
+    );
+    -webkit-mask-image: linear-gradient(
+        to bottom,
+        transparent 0%,
+        black 48px,
+        black calc(100% - 48px),
+        transparent 100%
+    );
 }
 
 .metagora-hero--right::-webkit-scrollbar {
@@ -6476,7 +6493,7 @@ Please, contact the administrator.`);return}localStorage.setItem(`aida_ak`,t.tok
                     <main class="mobile-warning">
                         <h2>Mobile Version Coming Soon</h2>
                         <p>
-                            The mobile version of Agora is still under development and will be available soon.<br>
+                            The mobile version of Agora Home is still under development and will be available soon.<br>
                             In the meantime, please use the desktop version for the best experience.
                         </p>
                     </main>
