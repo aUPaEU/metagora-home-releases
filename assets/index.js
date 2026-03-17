@@ -2497,7 +2497,7 @@ ul {
                 </div>
                 ${t.length>0?this.html`
                     <div class="filter-scroll-wrapper">
-                        <button class="filter-arrow filter-arrow--left" onclick="this.getRootNode().host.scrollFilterLeft()">
+                        <button class="filter-arrow filter-arrow--left" aria-label="Scroll left" onclick="this.getRootNode().host.scrollFilterLeft()">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                                 <polyline points="15 18 9 12 15 6"></polyline>
                             </svg>
@@ -2520,7 +2520,7 @@ ul {
                                 </button>
                             `).join(``)}
                         </div>
-                        <button class="filter-arrow filter-arrow--right" onclick="this.getRootNode().host.scrollFilterRight()">
+                        <button class="filter-arrow filter-arrow--right" aria-label="Scroll right" onclick="this.getRootNode().host.scrollFilterRight()">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                                 <polyline points="9 6 15 12 9 18"></polyline>
                             </svg>
@@ -5605,7 +5605,7 @@ textarea.placeholder-hidden::placeholder {
                         ></textarea>
                         <div class="actions">
                             <span class="shortcut">⌘ K</span>
-                            <button class="go-btn">${he}</button>
+                            <button class="go-btn" aria-label="Send">${he}</button>
                         </div>
                     </div>
                     <div class="suggestions hidden"></div>
