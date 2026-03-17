@@ -2130,6 +2130,44 @@ a.service-name:hover .company-badge {
 }
 
 /* Filter Styles */
+.filter-scroll-wrapper {
+    position: relative;
+}
+
+.filter-arrow {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    z-index: 2;
+    border: none;
+    cursor: pointer;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 0 2px;
+    width: 28px;
+    color: #6b7280;
+    transition: color 0.2s;
+}
+
+.filter-arrow:hover {
+    color: #374151;
+}
+
+.filter-arrow--left {
+    left: 0;
+    background: linear-gradient(to right, #fff 55%, transparent);
+}
+
+.filter-arrow--right {
+    right: 0;
+    background: linear-gradient(to left, #fff 55%, transparent);
+}
+
+.filter-arrow.visible {
+    display: flex;
+}
+
 .filter-container {
     display: flex;
     gap: 8px;
@@ -2445,7 +2483,7 @@ ul {
                     </details>
                     ${i===a.length-1?``:`<hr class="category-separator"/>`}
                 `}).join(``)}
-        `}template(){let e=this.serviceContext.get(`services`);if(!e||e.length===0)return this.renderSkeletonLoader();let t=this.getUniqueCompanies(e);return this.html`
+        `}updateScrollArrows(){let e=this.$(`.filter-container`),t=this.$(`.filter-arrow--left`),n=this.$(`.filter-arrow--right`);if(!e||!t||!n)return;let r=e.scrollLeft>0,i=e.scrollLeft<e.scrollWidth-e.clientWidth-1;t.classList.toggle(`visible`,r),n.classList.toggle(`visible`,i)}smoothScroll(e,t){let n=e.scrollLeft,r=Math.max(0,Math.min(n+t,e.scrollWidth-e.clientWidth)),i=performance.now(),a=e=>e<.5?2*e*e:-1+(4-2*e)*e,o=t=>{let s=t-i,c=Math.min(s/250,1);e.scrollLeft=n+(r-n)*a(c),c<1&&requestAnimationFrame(o)};requestAnimationFrame(o)}scrollFilterLeft(){let e=this.$(`.filter-container`);e&&this.smoothScroll(e,-150)}scrollFilterRight(){let e=this.$(`.filter-container`);e&&this.smoothScroll(e,150)}afterRender(){let e=this.$(`.filter-container`);e&&(e.addEventListener(`scroll`,()=>this.updateScrollArrows()),this.updateScrollArrows())}template(){let e=this.serviceContext.get(`services`);if(!e||e.length===0)return this.renderSkeletonLoader();let t=this.getUniqueCompanies(e);return this.html`
             <div class="search-container">
                 <div class="search-input-wrapper">
                     <span class="search-icon">${g}</span>
@@ -2458,23 +2496,35 @@ ul {
                     />
                 </div>
                 ${t.length>0?this.html`
-                    <div class="filter-container">
-                        <button 
-                            class="filter-chip ${this.selectedCompany===null?`active`:``}" 
-                            data-company="all"
-                            onclick="this.getRootNode().host.handleCompanyFilter(null)"
-                        >
-                            All
+                    <div class="filter-scroll-wrapper">
+                        <button class="filter-arrow filter-arrow--left" onclick="this.getRootNode().host.scrollFilterLeft()">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="15 18 9 12 15 6"></polyline>
+                            </svg>
                         </button>
-                        ${t.map(e=>this.html`
+                        <div class="filter-container">
                             <button 
-                                class="filter-chip ${this.selectedCompany===e?`active`:``}" 
-                                data-company="${e}"
-                                onclick="this.getRootNode().host.handleCompanyFilter('${e}')"
+                                class="filter-chip ${this.selectedCompany===null?`active`:``}" 
+                                data-company="all"
+                                onclick="this.getRootNode().host.handleCompanyFilter(null)"
                             >
-                                ${e}
+                                All
                             </button>
-                        `).join(``)}
+                            ${t.map(e=>this.html`
+                                <button 
+                                    class="filter-chip ${this.selectedCompany===e?`active`:``}" 
+                                    data-company="${e}"
+                                    onclick="this.getRootNode().host.handleCompanyFilter('${e}')"
+                                >
+                                    ${e}
+                                </button>
+                            `).join(``)}
+                        </div>
+                        <button class="filter-arrow filter-arrow--right" onclick="this.getRootNode().host.scrollFilterRight()">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="9 6 15 12 9 18"></polyline>
+                            </svg>
+                        </button>
                     </div>
                 `:``}
             </div>
@@ -2993,7 +3043,7 @@ ul {
         padding: 2px 8px;
         font-size: 10px;
     }
-}`,Oe=class extends i{serviceContext;configContext;companyContext;currentIndex=0;intervalId=null;activeBgIndex=0;constructor(){super(`plain-carousel`,De),this.serviceContext=this.useContext(m.SERVICE,!0),this.configContext=this.useContext(m.CONFIG,!0),this.companyContext=this.useContext(m.COMPANY,!0)}connectedCallback(){super.connectedCallback(),this.startAutoPlay()}disconnectedCallback(){super.disconnectedCallback(),this.stopAutoPlay()}startAutoPlay(){this.stopAutoPlay(),this.intervalId=setInterval(()=>{this.nextSlide()},5e3)}stopAutoPlay(){this.intervalId&&=(clearInterval(this.intervalId),null)}nextSlide(){let e=this.serviceContext.get(`services`)||[];e.length!==0&&(this.currentIndex=(this.currentIndex+1)%e.length,this.updateView())}setSlide(e){this.currentIndex=e,this.updateView(),this.startAutoPlay()}updateView(){let e=this.serviceContext.get(`services`)||[];if(e.length===0)return;let t=e[this.currentIndex],{name:n,description:r,image:i,suggested_search_terms:a,main_url:o}=t.fields,s=this.$$(`.carousel-bg`);if(s&&s.length===2){let e=this.activeBgIndex===0?1:0,n=s[this.activeBgIndex],r=s[e];if(i){let e=t._sourceHost||this.configContext.get(`API_HOST`);r.style.backgroundImage=`url('${e}${i}')`,r.style.removeProperty(`--primary-color`),r.classList.remove(`gradient-bg`)}else r.style.backgroundImage=``,r.style.setProperty(`--primary-color`,this.companyContext.get(`primaryColor`)||`#8238eb`),r.classList.add(`gradient-bg`);r.classList.add(`active`),n.classList.remove(`active`),this.activeBgIndex=e}let c=[this.$(`.title`),this.$(`.description`),this.$(`.search-terms`)],l=[this.$(`.tag`),this.$(`.action-button`)];c.forEach(e=>e?.classList.add(`exit`)),l.forEach(e=>e?.classList.add(`exit`)),setTimeout(()=>{let e=this.$(`.title`);e&&(e.textContent=n);let t=this.$(`.description`);t&&(t.textContent=r);let i=this.$(`.search-terms`);i&&(i.innerHTML=this.getSearchTerms(a).slice(0,3).map(e=>`<span>#${e.trim()}</span>`).join(` `));let s=this.$(`.action-button`);s&&(o&&o!==`False`?(s.style.visibility=`visible`,s.style.pointerEvents=``,s.tabIndex=0,s.href=`${o}`,s.style.backgroundColor=this.companyContext.get(`primaryColor`)||`#8238eb`):(s.style.visibility=`hidden`,s.style.pointerEvents=`none`,s.tabIndex=-1));let u=this.$$(`.dot`);u&&u.forEach((e,t)=>{t===this.currentIndex?e.classList.add(`active`):e.classList.remove(`active`)}),c.forEach(e=>{e&&(e.classList.remove(`exit`),e.classList.add(`enter-start`))}),l.forEach(e=>{e&&(e.classList.remove(`exit`),e.classList.add(`enter-start`))});let d=this.$(`.slide`);d&&d.offsetWidth,c.forEach(e=>e?.classList.remove(`enter-start`)),l.forEach(e=>e?.classList.remove(`enter-start`))},500)}getSearchTerms(e){return typeof e==`string`?e.split(`,`):Array.isArray(e)?e:[]}setupVariants(){switch(this.props.variant){case`small`:this.style.setProperty(`--slide-height`,`180px`),this.style.setProperty(`--big-text-size`,`16px`),this.style.setProperty(`--default-text-size`,`12px`),this.style.setProperty(`--small-text-size`,`10px`),this.style.setProperty(`--content-padding`,`20px 40px`),this.style.setProperty(`--cta-width`,`100px`),this.style.setProperty(`--cta-padding`,`5px 10px`),this.style.setProperty(`--cta-text-size`,`10px`),this.style.setProperty(`--button-bottom`,`4px`);break;default:this.style.setProperty(`--slide-height`,`100%`),this.style.setProperty(`--big-text-size`,`32px`),this.style.setProperty(`--default-text-size`,`16px`),this.style.setProperty(`--small-text-size`,`14px`),this.style.setProperty(`--content-padding`,`40px`),this.style.setProperty(`--cta-width`,`150px`),this.style.setProperty(`--cta-padding`,`10px 20px`),this.style.setProperty(`--cta-text-size`,`14px`),this.style.setProperty(`--button-bottom`,`8px`);break}}template(){this.setupVariants();let e=this.serviceContext.get(`services`)||[];if(e.length===0)return this.html``;let t=e[this.currentIndex],{name:n,description:r,image:i,suggested_search_terms:a,main_url:o}=t.fields,s=!!i,c=t._sourceHost||this.configContext.get(`API_HOST`),l=s?`background-image: url('${c}${i}');`:`--primary-color: ${this.companyContext.get(`primaryColor`)||`#8238eb`};`,u=s?``:`gradient-bg`,d=o&&o!==`False`,f=d?`background-color: ${this.companyContext.get(`primaryColor`)||`#8238eb`}`:`visibility: hidden; pointer-events: none;`;return this.html`
+}`,Oe=class extends i{serviceContext;configContext;companyContext;currentIndex=0;intervalId=null;activeBgIndex=0;constructor(){super(`plain-carousel`,De),this.serviceContext=this.useContext(m.SERVICE,!0),this.configContext=this.useContext(m.CONFIG,!0),this.companyContext=this.useContext(m.COMPANY,!0)}connectedCallback(){super.connectedCallback(),this.startAutoPlay()}disconnectedCallback(){super.disconnectedCallback(),this.stopAutoPlay()}startAutoPlay(){this.stopAutoPlay(),this.intervalId=setInterval(()=>{this.nextSlide()},5e3)}stopAutoPlay(){this.intervalId&&=(clearInterval(this.intervalId),null)}nextSlide(){let e=this.serviceContext.get(`services`)||[];e.length!==0&&(this.currentIndex=(this.currentIndex+1)%e.length,this.updateView())}setSlide(e){this.currentIndex=e,this.updateView(),this.startAutoPlay()}updateView(){let e=this.serviceContext.get(`services`)||[];if(e.length===0)return;let t=e[this.currentIndex],{name:n,description:r,image:i,suggested_search_terms:a,main_url:o}=t.fields,s=this.$$(`.carousel-bg`);if(s&&s.length===2){let e=this.activeBgIndex===0?1:0,n=s[this.activeBgIndex],r=s[e];if(i){let e=t._sourceHost||this.configContext.get(`API_HOST`);r.style.backgroundImage=`url('${e}${i}')`,r.style.removeProperty(`--primary-color`),r.classList.remove(`gradient-bg`)}else r.style.backgroundImage=``,r.style.setProperty(`--primary-color`,this.companyContext.get(`primaryColor`)||`#8238eb`),r.classList.add(`gradient-bg`);r.classList.add(`active`),n.classList.remove(`active`),this.activeBgIndex=e}let c=[this.$(`.title`),this.$(`.description`),this.$(`.search-terms`)],l=[this.$(`.tag`),this.$(`.action-button`)];c.forEach(e=>e?.classList.add(`exit`)),l.forEach(e=>e?.classList.add(`exit`)),setTimeout(()=>{let e=this.$(`.title`);e&&(e.textContent=n);let t=this.$(`.description`);t&&(t.textContent=r);let i=this.$(`.search-terms`);i&&(i.innerHTML=this.getSearchTerms(a).slice(0,3).map(e=>`<span>#${e.trim()}</span>`).join(` `));let s=this.$(`.action-button`);s&&(o&&o!==`False`?(s.style.visibility=`visible`,s.style.pointerEvents=``,s.tabIndex=0,s.href=`${o}`,s.style.backgroundColor=this.companyContext.get(`primaryColor`)||`#8238eb`):(s.style.visibility=`hidden`,s.style.pointerEvents=`none`,s.tabIndex=-1));let u=this.$$(`.dot`);u&&u.forEach((e,t)=>{t===this.currentIndex?e.classList.add(`active`):e.classList.remove(`active`)}),c.forEach(e=>{e&&(e.classList.remove(`exit`),e.classList.add(`enter-start`))}),l.forEach(e=>{e&&(e.classList.remove(`exit`),e.classList.add(`enter-start`))});let d=this.$(`.slide`);d&&d.offsetWidth,c.forEach(e=>e?.classList.remove(`enter-start`)),l.forEach(e=>e?.classList.remove(`enter-start`))},500)}getSearchTerms(e){return typeof e==`string`&&e!==`False`&&e.trim()!==``?e.split(`,`):Array.isArray(e)?e.filter(e=>e&&e!==`False`):[]}setupVariants(){switch(this.props.variant){case`small`:this.style.setProperty(`--slide-height`,`180px`),this.style.setProperty(`--big-text-size`,`16px`),this.style.setProperty(`--default-text-size`,`12px`),this.style.setProperty(`--small-text-size`,`10px`),this.style.setProperty(`--content-padding`,`20px 40px`),this.style.setProperty(`--cta-width`,`100px`),this.style.setProperty(`--cta-padding`,`5px 10px`),this.style.setProperty(`--cta-text-size`,`10px`),this.style.setProperty(`--button-bottom`,`4px`);break;default:this.style.setProperty(`--slide-height`,`100%`),this.style.setProperty(`--big-text-size`,`32px`),this.style.setProperty(`--default-text-size`,`16px`),this.style.setProperty(`--small-text-size`,`14px`),this.style.setProperty(`--content-padding`,`40px`),this.style.setProperty(`--cta-width`,`150px`),this.style.setProperty(`--cta-padding`,`10px 20px`),this.style.setProperty(`--cta-text-size`,`14px`),this.style.setProperty(`--button-bottom`,`8px`);break}}template(){this.setupVariants();let e=this.serviceContext.get(`services`)||[];if(e.length===0)return this.html``;let t=e[this.currentIndex],{name:n,description:r,image:i,suggested_search_terms:a,main_url:o}=t.fields,s=!!i,c=t._sourceHost||this.configContext.get(`API_HOST`),l=s?`background-image: url('${c}${i}');`:`--primary-color: ${this.companyContext.get(`primaryColor`)||`#8238eb`};`,u=s?``:`gradient-bg`,d=o&&o!==`False`,f=d?`background-color: ${this.companyContext.get(`primaryColor`)||`#8238eb`}`:`visibility: hidden; pointer-events: none;`;return this.html`
             <div class="carousel-container ${this.props.variant?`carousel-${this.props.variant}`:``}">
                 <div class="slide">
                     <div class="carousel-bg active ${u}" style="${l}"></div>
